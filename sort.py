@@ -1,25 +1,39 @@
-from datetime import datetime
-from datetime import date
 import pandas as pd
+from datetime import datetime
+from datetime import timedelta
+def inserrt(dab, l):
+    lisdate = datetime.strptime(l[3], "%d-%m-%Y")
+    db = open(dab, 'r')
+    dl = db.readlines()
+    for i in range(len(dl)):
+        dl[i] = dl[i].split(",")
+    print(dl)
+    i=1
+    while(True):
+        tempd = datetime.strptime(dl[i][3], "%d-%m-%Y")
+        diff = (lisdate - tempd).days + 1
+        if(diff>0):
+            i+=1
+        else:
+            dl.insert(i, l)
+            df = pd.DataFrame(dl)
+            print(df)
+            df.to_csv("temp.csv",index=False, header=False)
+            break
 
-def inserrt(fname,list):
-    keydate = datetime.strptime(list[-1], "%Y-%m-%d")
-    file = open(fname, 'r')
-    l = file.readlines()
-    mat = []
-    for i in range(len(l)):
-        l[i] = l[i].split(',')
-    i = 1
-    st = str(l[i][-1])
-    print(l[i][-1])
-    while(i<len(l)):
-        tempdate = datetime.strptime(st, "%Y-%m-%d")
-        diff = (keydate-tempdate).days
-        print(diff)
-        i+=1
+db = "db.csv"
+l = ['2022-11-5', "jhvjhvb", "1234567890", "9-11-2022", "aerwywgrf"]
+inserrt(db, l)
 
-f = 'db.csv'
-l = ['2003-06-20','f','f','f','f','f','2003-06-22']
-inserrt(f,l)
-# td = date.today()
-# print(td)
+# db = open("test.csv", "r")
+# dl = db.readlines()
+# print(dl)
+# for i in range(len(dl)):
+#     dl[i] = dl[i].split(',')
+# print(dl)
+# df = pd.DataFrame(dl)
+# print(df)
+# df.to_csv("temp.csv", index=False, header=False)
+# dbb = open("temp.csv","r")
+# l = dbb.read()
+# print(l)
