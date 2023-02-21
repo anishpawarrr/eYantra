@@ -12,19 +12,7 @@ def checklogg(ml, pw):
         if auth.send_email_verification(User['idToken']):
             return True, ml.replace('.', '"')
     except:
-        return False, 'qqqq'
-
-def signup(ml, pw):
-
-    if 'showsu' not in st.session_state:
-        st.session_state['showsu'] = True
-
-
-    auth.create_user_with_email_and_password(ml,pw)
-
-
-
-
+        return False, ''
 
 st.set_page_config(page_title= "VAXER", page_icon='bi bi-activity', layout= 'wide', initial_sidebar_state='expanded')
 
@@ -60,9 +48,9 @@ elif st.session_state['opt'] == 'Login':
             # st.session_state['showform'] = False
             if logbool:
                 st.session_state['showform'] = False
-                st.write('RYT')
+                st.write('Logged in successfully')
             else:
-                st.write('WRNG')
+                st.write('Wrong credentials')
 
 
         # with st.form('Enter login credentials'):
@@ -80,7 +68,7 @@ elif st.session_state['opt'] == 'Login':
         #     if fsb:
         #         st.session_state['stri'] = checklogg(mail, pw)
 
-    st.write(st.session_state['stri'])
+    # st.write(st.session_state['stri'])
 
 elif st.session_state['opt'] == 'Sign up':
     st.write("Sign up")

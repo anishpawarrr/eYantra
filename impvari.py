@@ -8,3 +8,6 @@ config = {
     'measurementId': "G-TEQSLX0RHP",
     'databaseURL':''
 }
+
+# fake = str(x[4])
+#     ndata = {fake.replace('.','"'): {'vacdate': x[7], 'dob': x[2], 'fno': x[0], 'fml': x[4], 'mno': x[3], 'mml': x[5], 'vactype': x[6],'name': str(i)}}
