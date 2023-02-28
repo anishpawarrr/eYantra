@@ -21,7 +21,8 @@ auth = fb.auth()
 
 cred = credentials.Certificate("serviceaccountKey.json")
 # app = firebase_admin.initialize_app(cred)
-
+# cred = credentials.Certificate("serviceaccountKey.json")
+# app = firebase_admin.initialize_app(cred)
 
 if 'opt' not in st.session_state:
     st.session_state['opt'] = 'Default'
@@ -49,6 +50,13 @@ elif st.session_state['opt'] == 'Login':
             if logbool:
                 st.session_state['showform'] = False
                 st.write('Logged in successfully')
+                ref = db.reference(url='https://vaxer-65c87-default-rtdb.asia-southeast1.firebasedatabase.app/')
+                uref = ref.child('users')
+                udata = uref.child(st.session_state['stri']).get()
+                st.write(udata)
+                st.write(f'Dob of child -> {udata["dob"]}')
+                st.write(f'Type of vaccine -> {udata["vactype"]}')
+                st.write(f'vaccination date -> {udata["vacdate"]}')
             else:
                 st.write('Wrong credentials')
 
@@ -116,6 +124,19 @@ elif st.session_state['opt'] == 'Sign up':
     # signup
 elif st.session_state['opt'] == 'Admin Login':
     #  admin
+    if 'isadmin' not in st.session_state:
+        st.session_state['isadmin'] = False
+
+    adpair = {'admin1': 'pass1', 'admin2':'pass2'}
+    adid = st.text_input('Enter id')
+    adpw = st.text_input('Enter password')
+    b = st.button('Login')
+    if(adpw == adpair[adid]):
+        st.session_state['isadmin'] = True
+    else:
+        st.write('Wrong credentials')
+    if(st.session_state['isadmin']):
+        f = st.file_uploader("Enter excel sheet")
     st.write("Admin Login")
 elif st.session_state['opt'] == 'Contact Us':
     st.write("Contact Us")
