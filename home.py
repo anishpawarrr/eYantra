@@ -6,23 +6,25 @@ from firebase_admin import db, credentials
 import firebase_admin
 # import login
 
-def checklogg(ml, pw):
-    try:
-        User = auth.sign_in_with_email_and_password(ml, pw)
-        if auth.send_email_verification(User['idToken']):
-            return True, ml.replace('.', '"')
-    except:
-        return False, ''
+
 
 st.set_page_config(page_title= "VAXER", page_icon='bi bi-activity', layout= 'wide', initial_sidebar_state='expanded')
 
-fb = pb.initialize_app(impvari.config)
-auth = fb.auth()
+
 
 cred = credentials.Certificate("serviceaccountKey.json")
 # app = firebase_admin.initialize_app(cred)
 # cred = credentials.Certificate("serviceaccountKey.json")
 # app = firebase_admin.initialize_app(cred)
+
+def checklogg(ml, pw):
+    fb = pb.initialize_app(impvari.config)
+    auth = fb.auth()
+    try:
+        auth.sign_in_with_email_and_password(ml, pw)
+        return True, ml.replace('.', '"')
+    except:
+        return False, ''
 
 if 'opt' not in st.session_state:
     st.session_state['opt'] = 'Default'
@@ -116,7 +118,11 @@ elif st.session_state['opt'] == 'Sign up':
             uref = ref.child('users')
             uref.update(ndata)
             # ml = 'xyzz@gmail.com'
+            fb = pb.initialize_app(impvari.config)
+            auth = fb.auth()
             auth.create_user_with_email_and_password(ml, pw)
+            del fb
+            del auth
             st.session_state['showsu'] = False
             bu = st.button('1234')
             st.write('Account created Successfully')
@@ -127,16 +133,20 @@ elif st.session_state['opt'] == 'Admin Login':
     if 'isadmin' not in st.session_state:
         st.session_state['isadmin'] = False
 
-    adpair = {'admin1': 'pass1', 'admin2':'pass2'}
+    adpair = {'admin1': 'pass1', 'admin2': 'pass2'}
     adid = st.text_input('Enter id')
     adpw = st.text_input('Enter password')
     b = st.button('Login')
-    if(adpw == adpair[adid]):
+    if(b and adpw == adpair[adid]):
         st.session_state['isadmin'] = True
-    else:
+
+    elif b:
         st.write('Wrong credentials')
     if(st.session_state['isadmin']):
-        f = st.file_uploader("Enter excel sheet")
+        # f = st.file_uploader("Enter excel sheet")
+        file = st.file_uploader("Upload records", type={'xlsx', 'csv'})
+        if file is not None:
+            st.write("File sent successfully")
     st.write("Admin Login")
 elif st.session_state['opt'] == 'Contact Us':
     st.write("Contact Us")

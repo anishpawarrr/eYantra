@@ -58,9 +58,9 @@ print(fbdata)
 # print(usersref['u1'])
 
 # creating, updating database
-ref = db.reference(url='https://vaxer-65c87-default-rtdb.asia-southeast1.firebasedatabase.app/')
-uref = ref.child('users')
-uref.update(ndata)
+# ref = db.reference(url='https://vaxer-65c87-default-rtdb.asia-southeast1.firebasedatabase.app/')
+# uref = ref.child('users')
+# uref.update(ndata)
 
 # accessing db
 # ref = db.reference(url='https://vaxer-65c87-default-rtdb.asia-southeast1.firebasedatabase.app/')
