@@ -1,3 +1,4 @@
+import datetime
 import streamlit as st
 import streamlit_option_menu as om
 import pyrebase as pb
@@ -16,6 +17,13 @@ cred = credentials.Certificate("serviceaccountKey.json")
 # app = firebase_admin.initialize_app(cred)
 # cred = credentials.Certificate("serviceaccountKey.json")
 # app = firebase_admin.initialize_app(cred)
+
+def caldate(dob):
+    dob = datetime.datetime.strptime(dob, '%Y-%m-%d')
+    vac1date = dob + datetime.timedelta(days=42)
+    vac2date = dob + datetime.timedelta(days=70)
+    vac3date = dob + datetime.timedelta(days=98)
+    return vac1date.date(), vac2date.date(), vac3date.date()
 
 def checklogg(ml, pw):
     fb = pb.initialize_app(impvari.config)
@@ -36,29 +44,32 @@ if st.session_state['opt'] == 'Default':
     st.write("Home")
 elif st.session_state['opt'] == 'Login':
     # login
-    st.write("Login")
+    # st.write("Login")
     if 'showform' not in st.session_state:
         st.session_state['showform'] = True
     if 'stri' not in st.session_state:
         st.session_state['stri'] = ''
     if st.session_state['showform']:
         ml = st.text_input('Enter mail')
-        pw = st.text_input('Enter password')
+        pw = st.text_input('Enter password', type='password')
         b = st.button('Login')
         if b:
             logbool, st.session_state['stri'] = checklogg(ml, pw)
-            st.button('Verify you are not robot')
+            # st.button('Verify you are not robot')
             # st.session_state['showform'] = False
             if logbool:
                 st.session_state['showform'] = False
                 st.write('Logged in successfully')
+                # app = firebase_admin.initialize_app(cred)
                 ref = db.reference(url='https://vaxer-65c87-default-rtdb.asia-southeast1.firebasedatabase.app/')
                 uref = ref.child('users')
                 udata = uref.child(st.session_state['stri']).get()
-                st.write(udata)
+                # st.write(udata)
                 st.write(f'Dob of child -> {udata["dob"]}')
-                st.write(f'Type of vaccine -> {udata["vactype"]}')
-                st.write(f'vaccination date -> {udata["vacdate"]}')
+                # st.write(f'Type of vaccine -> {udata["vactype"]}')
+                st.write(f'vaccination date of OPV-1 -> {udata["opv1"]}')
+                st.write(f'vaccination date of OPV-2 -> {udata["opv2"]}')
+                st.write(f'vaccination date of OPV-3 -> {udata["opv3"]}')
             else:
                 st.write('Wrong credentials')
 
@@ -81,7 +92,7 @@ elif st.session_state['opt'] == 'Login':
     # st.write(st.session_state['stri'])
 
 elif st.session_state['opt'] == 'Sign up':
-    st.write("Sign up")
+    # st.write("Sign up")
     if 'showsu' not in st.session_state:
         st.session_state['showsu'] = True
     if st.session_state['showsu']:
@@ -93,13 +104,18 @@ elif st.session_state['opt'] == 'Sign up':
         mml = st.text_input("Enter mother's mail id")
         mno = st.text_input("Enter mother's phone number")
         nm = st.text_input("Enter name of child")
-        pw = st.text_input("Enter password")
+        pw = st.text_input("Enter password", type='password')
         sb = st.button("Create Account")
         if sb:
+
             st.session_state['showus'] = False
-            cb = st.checkbox("Verify you are human")
+            # cb = st.checkbox("Verify you are human")
             faml = ml.replace('.','"')
-            st.write(faml)
+            d1, d2, d3 = caldate(dob)
+            d1 = str(d1)
+            d2 = str(d2)
+            d3 = str(d3)
+            # st.write(faml)
             # vacdate = '2023-02-20'
             # dob = '2003-05-22'
             # fno = '9146623526'
@@ -113,7 +129,10 @@ elif st.session_state['opt'] == 'Sign up':
             #     rstr: {'vacdate': vacdate, 'dob': dob, 'fno': fno, 'fml': fml, 'mno': mno, 'mml': mml, 'vactype': type,
             #            'name': cnm}}
             # nndata = {fml: {'vacdate': dob, 'dob': dob, 'fno': fno, 'fml': fml, 'mno': mno, 'mml': mml, 'vactype': 'x', 'name': nm}}
-            ndata = {faml: {'vacdate': dob, 'dob': dob, 'fno': fno, 'fml': fml, 'mno': mno, 'mml': mml, 'vactype': 'x','name': nm}}
+            # if 'su' not in st.session_state:
+            #     st.session_state['su'] = firebase_admin.initialize_app(cred, name='su')
+            # app = firebase_admin.initialize_app(cred, name='su')
+            ndata = {faml: {'opv1': d1, 'opv2': d2, 'opv3': d3, 'dob': dob, 'fno': fno, 'fml': fml, 'mno': mno, 'mml': mml,'name': nm}}
             ref = db.reference(url='https://vaxer-65c87-default-rtdb.asia-southeast1.firebasedatabase.app/')
             uref = ref.child('users')
             uref.update(ndata)
@@ -124,7 +143,7 @@ elif st.session_state['opt'] == 'Sign up':
             del fb
             del auth
             st.session_state['showsu'] = False
-            bu = st.button('1234')
+            # bu = st.button('1234')
             st.write('Account created Successfully')
 
     # signup
@@ -135,7 +154,7 @@ elif st.session_state['opt'] == 'Admin Login':
 
     adpair = {'admin1': 'pass1', 'admin2': 'pass2'}
     adid = st.text_input('Enter id')
-    adpw = st.text_input('Enter password')
+    adpw = st.text_input('Enter password', type='password')
     b = st.button('Login')
     if(b and adpw == adpair[adid]):
         st.session_state['isadmin'] = True
